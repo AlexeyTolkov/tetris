@@ -2,19 +2,20 @@
 
 namespace tetris
 {
-    class Program
+    partial class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.SetWindowSize(40, 30);
+            Console.SetBufferSize(40, 30);
 
-            Console.WriteLine("Hi!");
+            var s = new Square(5, 5, "*");
+            s.Draw();
 
-            Console.WriteLine("Hi2");
+            var lll = new Line(10, 5, "*");
+            lll.Draw();
 
-            Console.WriteLine("sdofksnedlfknsdlkf");
-
-            //test2
+            Console.ReadLine();
         }
     }
 }
