@@ -1,8 +1,8 @@
 ﻿namespace tetris
 {
-    class Stick : Figure
+    class Block_I : Block
     {
-        public Stick(int x, int y, string sym = _sym)
+        public Block_I(int x, int y, string sym = _sym)
         {
             _points = new Point[4];
             _points[0] = new Point(x,y,sym);

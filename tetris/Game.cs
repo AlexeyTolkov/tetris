@@ -7,7 +7,7 @@ namespace tetris
     partial class Game
     {
         private short _speedOfUpdate;
-        private FigureController _figuresController;
+        private BlocksController _figuresController;
 
         protected void Init()
         {
@@ -17,7 +17,7 @@ namespace tetris
 
             _speedOfUpdate = 300;
 
-            _figuresController = new FigureController();
+            _figuresController = new BlocksController();
         }
 
         public void StartNewGame()
@@ -28,7 +28,7 @@ namespace tetris
 
         private void CreateNewFigure()
         {
-            _figuresController.CreateNewFigure();
+            _figuresController.CreateNewFigureRandom();
         }
 
         public void Pause()

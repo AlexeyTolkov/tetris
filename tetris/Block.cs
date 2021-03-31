@@ -1,9 +1,9 @@
 ﻿namespace tetris
 {
-    class Figure
+    abstract class Block
     {
         protected Point[] _points;
-        protected string _sym = "☺"; 
+        protected const string _sym = "☺"; 
 
         public void Draw()
         {
