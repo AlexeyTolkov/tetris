@@ -2,20 +2,29 @@
 
 namespace tetris
 {
+
+
     partial class Program
     {
+        
+
         static void Main(string[] args)
         {
-            Console.SetWindowSize(40, 30);
-            Console.SetBufferSize(40, 30);
+            ConsoleKey pressedKey;
 
-            var s = new Square(5, 5, "*");
-            s.Draw();
+            // start the game
+            var game = new Game();
+            game.StartNewGame();
 
-            var lll = new Line(10, 5, "*");
-            lll.Draw();
+            Console.WriteLine("Press 'ESC' to stop");
+            do
+            {
+                pressedKey = Console.ReadKey(false).Key;
 
-            Console.ReadLine();
+                game.KeyPressHandler(pressedKey);
+                game.Proceed();
+
+            } while (pressedKey != ConsoleKey.Escape);
         }
     }
 }

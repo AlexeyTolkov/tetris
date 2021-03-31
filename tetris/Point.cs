@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 namespace tetris
 {
 
-    class Point
+    public class Point
     {
-        readonly int _x;
-        readonly int _y;
+        int _x;
+        int _y;
         readonly string _sym;
 
         public Point(int x, int y, string sym)
@@ -24,6 +24,30 @@ namespace tetris
         {
             Console.SetCursorPosition(_x, _y);
             Console.Write(_sym);
+        }
+
+        internal void Hide()
+        {
+            Console.SetCursorPosition(_x, _y);
+            Console.Write(" ");
+        }
+
+        internal void Move(Directions dir)
+        {
+            switch (dir)
+            {
+                case Directions.Left:
+                    _x--;
+                    break;
+
+                case Directions.Right:
+                    _x++;
+                    break;
+
+                case Directions.Down:
+                    _y++;
+                    break;
+            }
         }
     }
 }
