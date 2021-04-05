@@ -6,29 +6,28 @@ using System.Threading.Tasks;
 
 namespace tetris
 {
-
     public class Point
     {
-        int _x;
-        int _y;
-        readonly string _sym;
+        public int X { get; set; }
+        public int Y { get; set; }
+        public string Sym { get; set; }
 
         public Point(int x, int y, string sym)
         {
-            _x = x;
-            _y = y;
-            _sym = sym;
+            X = x;
+            Y = y;
+            Sym = sym;
         }
 
         public void Draw()
         {
-            Console.SetCursorPosition(_x, _y);
-            Console.Write(_sym);
+            Console.SetCursorPosition(X, Y);
+            Console.Write(Sym);
         }
 
         internal void Hide()
         {
-            Console.SetCursorPosition(_x, _y);
+            Console.SetCursorPosition(X, Y);
             Console.Write(" ");
         }
 
@@ -37,17 +36,27 @@ namespace tetris
             switch (dir)
             {
                 case Directions.Left:
-                    _x--;
+                    X--;
                     break;
 
                 case Directions.Right:
-                    _x++;
+                    X++;
                     break;
 
                 case Directions.Down:
-                    _y++;
+                    Y++;
                     break;
             }
+        }
+
+        internal Point Clone()
+        {
+            return new Point(X, Y, Sym);
+        }
+
+        public bool IsWindowBoundsCollision()
+        {
+            return X >= Field.Width || X < 0 || Y >= Field.Height || Y < 0;
         }
     }
 }

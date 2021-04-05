@@ -47,7 +47,6 @@ namespace tetris
         Z_Block
     }    
 
-
     class BlockTypeRandomizer
     {
         public static BlockType GetBlockType()

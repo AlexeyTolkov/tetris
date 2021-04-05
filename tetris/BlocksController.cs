@@ -8,8 +8,8 @@ namespace tetris
         class BlocksController
         {
             // initial position
-            private const short _figureInitPositionX = 20;
-            private const short _figureInitPositionY = 0;
+            private const int _figureInitPositionX = 20;
+            private const int _figureInitPositionY = 10;
 
             // list of figures
             private List<Block> _figures = new List<Block>();
@@ -17,47 +17,35 @@ namespace tetris
             // current figure
             private Block _figureInFocus;
 
-            public BlocksController()
-            {
-
-            }
-
             internal void CreateNewFigureRandom()
             {
-                CreateNewFigure(BlockTypeRandomizer.GetBlockType());
+                //CreateNewFigure(BlockTypeRandomizer.GetBlockType());
+
+                //TODO: for test
+                CreateNewFigure(BlockType.J_Block);
             }
 
             private void CreateNewFigure(BlockType blockType)
             {
-                switch (blockType)
-                {
-                    case BlockType.I_Block:
-                        _figureInFocus = new Block_I(_figureInitPositionX, _figureInitPositionY);
-                        break;
-                    case BlockType.J_Block:
-                        _figureInFocus = new Block_J(_figureInitPositionX, _figureInitPositionY);
-                        break;
-                    case BlockType.L_Block:
-                        _figureInFocus = new Block_L(_figureInitPositionX, _figureInitPositionY);
-                        break;
-                    case BlockType.O_Block:
-                        _figureInFocus = new Block_O(_figureInitPositionX, _figureInitPositionY);
-                        break;
-                    case BlockType.S_Block:
-                        _figureInFocus = new Block_S(_figureInitPositionX, _figureInitPositionY);
-                        break;
-                    case BlockType.T_Block:
-                        _figureInFocus = new Block_T(_figureInitPositionX, _figureInitPositionY);
-                        break;
-                    case BlockType.Z_Block:
-                        _figureInFocus = new Block_Z(_figureInitPositionX, _figureInitPositionY);
-                        break;
-                    default:
-                        throw new NotImplementedException();
-
-                }
-
+                _figureInFocus = Block.Create(blockType, _figureInitPositionX, _figureInitPositionY);
                 _figures.Add(_figureInFocus);
+            }
+
+            internal void CreateNewFigureIfNeeded()
+            {
+                if (_figureInFocus == null
+                    || _figureInFocus.getState() == BlockState.Freezed)
+                {
+                    CreateNewFigureRandom();
+                }
+            }
+
+            internal void FigureRotate()
+            {
+                if (_figureInFocus != null)
+                {
+                    _figureInFocus.TryRotate();
+                }
             }
 
             protected void Reset()
@@ -70,13 +58,8 @@ namespace tetris
             { 
                 if (_figureInFocus != null)
                 {
-                    _figureInFocus.Move(direction);
+                    _figureInFocus.TryMove(direction);
                 }
-            }
-
-            internal void Draw()
-            {
-                _figureInFocus.Draw();
             }
         }
     }

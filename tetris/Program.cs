@@ -6,25 +6,18 @@ namespace tetris
 
     partial class Program
     {
-        
-
         static void Main(string[] args)
         {
-            ConsoleKey pressedKey;
-
             // start the game
-            var game = new Game();
+            var pressKeyHandler = new PressKeyHandler();
+            var game = new Game(pressKeyHandler);
+            
             game.StartNewGame();
 
-            Console.WriteLine("Press 'ESC' to stop");
             do
             {
-                pressedKey = Console.ReadKey(false).Key;
-
-                game.KeyPressHandler(pressedKey);
-                game.Proceed();
-
-            } while (pressedKey != ConsoleKey.Escape);
+                game.Play();
+            } while (game.SholdBeContinued());
         }
     }
 }

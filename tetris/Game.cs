@@ -6,16 +6,25 @@ namespace tetris
 {
     partial class Game
     {
-        private short _speedOfUpdate;
         private BlocksController _figuresController;
+        private PressKeyHandler _pressKeyHandler;
+
+        public Game(PressKeyHandler pressKeyHandler)
+        {
+            _pressKeyHandler = pressKeyHandler;
+        }
+
+        internal bool SholdBeContinued()
+        {
+            return !(GameOver() || _pressKeyHandler.AbortTheGame());
+        }
 
         protected void Init()
         {
-            Console.SetWindowSize(40, 30);
-            Console.SetBufferSize(40, 30);
-            Console.CursorVisible = false;
+            Field.Width = 40;
+            Field.Height = 30;
 
-            _speedOfUpdate = 300;
+            Console.CursorVisible = false;
 
             _figuresController = new BlocksController();
         }
@@ -23,7 +32,6 @@ namespace tetris
         public void StartNewGame()
         {
             Init();
-            CreateNewFigure();
         }
 
         private void CreateNewFigure()
@@ -36,8 +44,13 @@ namespace tetris
 
         }
 
-        internal void KeyPressHandler(ConsoleKey pressedKey)
+        internal void KeyPressHandler()
         {
+            if (!_pressKeyHandler.OperateIfKeyPressed())
+                return;
+
+            var pressedKey = _pressKeyHandler.pressedKey;
+
             switch (pressedKey)
             {
                 case ConsoleKey.LeftArrow:
@@ -49,14 +62,30 @@ namespace tetris
                 case ConsoleKey.DownArrow:
                     _figuresController.FigureMove(Directions.Down);
                     break;
+                case ConsoleKey.Spacebar:
+                    _figuresController.FigureRotate();
+                    break;
             }
         }
 
-        internal void Proceed()
+        internal void Play()
         {
-            //Console.Clear();
-            _figuresController.Draw();
-            Thread.Sleep(_speedOfUpdate);
+            KeyPressHandler();
+
+            _figuresController.CreateNewFigureIfNeeded();
+            //_figuresController.MoveFigureDown();
+            
+            //Thread.Sleep(500);
+        }
+
+        private bool GameOver()
+        {
+            //TODO:
+
+            // if it's impossible to create a new block because of collision
+
+
+            return false;
         }
     }
 }
