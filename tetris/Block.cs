@@ -4,19 +4,22 @@ namespace tetris
 {
     abstract class Block
     {
-        protected const int maxCntOfPoint = 5; 
-        protected Point[] _points;
-        protected const string _sym = "☺";
-        protected BlockState _state = BlockState.Dropping;
+        public Point[] Points;
+        protected const string SYM = "☺";
+        //protected BlockState State = BlockState.Dropping;
+        public BlockState State { get; set; }
 
-        public Block(int x, int y, string sym = _sym)
+        protected const int MAX_CNT_OF_POINTS = 5; 
+
+        public Block(int x, int y, string sym = SYM)
         {
-            _points = new Point[maxCntOfPoint - 1];
+            Points = new Point[MAX_CNT_OF_POINTS - 1];
+            State  = BlockState.NewBlock;
         }
 
         public void Draw()
         {
-            foreach (var point in _points)
+            foreach (var point in Points)
             {
                 point.Draw();
             }
@@ -24,7 +27,7 @@ namespace tetris
 
         public void Hide()
         {
-            foreach(var point in _points)
+            foreach(var point in Points)
             {
                 point.Hide();
             }
@@ -38,33 +41,46 @@ namespace tetris
             }
         }
 
-        internal void TryMove(Directions direction)
+        internal PositionResult TryMove(Directions direction)
         {
             Hide();
             var clonedPoints = ClonePoints();
             Move(clonedPoints, direction);
 
-            if (VerifyPosition(clonedPoints))
-                _points = clonedPoints;
+
+            var result = VerifyPosition(clonedPoints);
+            if (result == PositionResult.SUCCESS)
+            {
+                State = BlockState.Dropping;
+                Points = clonedPoints;
+            }
 
             Draw();
+
+            return result;
         }
 
-        internal void TryRotate()
+        internal PositionResult TryRotate()
         {
             Hide();
             var clonedPoints = ClonePoints();
             Rotate(clonedPoints);
 
-            if (VerifyPosition(clonedPoints))
-                _points = clonedPoints;
+            var result = VerifyPosition(clonedPoints);
+            if (result == PositionResult.SUCCESS)
+            {
+                State = BlockState.Dropping;
+                Points = clonedPoints;
+            }
 
             Draw();
+
+            return result;
         }
 
         internal void Rotate()
         {
-            Rotate(_points);
+            Rotate(Points);
         }
 
         internal void Rotate(Point[] pList)
@@ -104,7 +120,7 @@ namespace tetris
                 {
                     if (rotateGrid[x, y] == 1)
                     {
-                        pList[pointIdx] = new Point(y + offsetX, x + offsetY, _sym);
+                        pList[pointIdx] = new Point(y + offsetX, x + offsetY, SYM);
                         pointIdx++;
                     }
                 }
@@ -123,29 +139,44 @@ namespace tetris
         //    Draw();
         //}
 
-        bool VerifyPosition(Point[] points)
+        PositionResult VerifyPosition(Point[] points)
         {
             foreach (var point in points)
             {
-                if (point.IsWindowBoundsCollision())
-                    return false;
+                if (point.Y >= Field.Height)
+                    return PositionResult.DOWN_BORDER_STRIKE;
+
+                if (point.X >= Field.Width || point.X < 0 || point.Y < 0)
+                    return PositionResult.BORDER_STRIKE;
+
+                if (Field.CheckStrike(point))
+                {
+                    if (State == BlockState.NewBlock)
+                    {
+                        return PositionResult.NEW_BLOCK_IS_STUCKED;
+                    }
+                    else
+                    {
+                        return PositionResult.HEAP_STRIKE;
+                    }
+                }
             }
 
-            return true;
+            return PositionResult.SUCCESS;
         }
 
-        internal BlockState getState()
+        public PositionResult VerifyPosition()
         {
-            return _state;
+            return VerifyPosition(Points);
         }
 
         private Point[] ClonePoints()
         {
-            var newPoints = new Point[maxCntOfPoint-1];
+            var newPoints = new Point[MAX_CNT_OF_POINTS-1];
 
-            for (int i = 0; i < maxCntOfPoint-1; i++)
+            for (int i = 0; i < MAX_CNT_OF_POINTS-1; i++)
             {
-                newPoints[i] = _points[i].Clone();
+                newPoints[i] = Points[i].Clone();
             }            
 
             return newPoints;

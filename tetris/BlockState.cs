@@ -6,7 +6,9 @@ namespace tetris
 {
     enum BlockState
     {
+        NewBlock,
         Dropping,
-        Freezed
+        Freezed,
+        Stucked
     }
 }

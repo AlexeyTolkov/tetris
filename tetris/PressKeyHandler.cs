@@ -4,23 +4,23 @@ namespace tetris
 {
     internal class PressKeyHandler
     {
-        public ConsoleKey? pressedKey { get; private set; }
+        public ConsoleKey? PressedKey { get; private set; }
 
         internal bool OperateIfKeyPressed()
         {
-            pressedKey = null;
+            PressedKey = null;
 
             if (Console.KeyAvailable)
             {
-                pressedKey = Console.ReadKey(false).Key;
+                PressedKey = Console.ReadKey(false).Key;
             }
 
-            return pressedKey != null;
+            return PressedKey != null;
         }
 
         internal bool AbortTheGame()
         {
-            return pressedKey == ConsoleKey.Escape;
+            return PressedKey == ConsoleKey.Escape;
         }
 
         public PressKeyHandler()

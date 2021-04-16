@@ -6,7 +6,7 @@ namespace tetris
 {
     partial class Game
     {
-        private BlocksController _figuresController;
+        private BlocksController _blockController;
         private PressKeyHandler _pressKeyHandler;
 
         public Game(PressKeyHandler pressKeyHandler)
@@ -26,7 +26,7 @@ namespace tetris
 
             Console.CursorVisible = false;
 
-            _figuresController = new BlocksController();
+            _blockController = new BlocksController();
         }
 
         public void StartNewGame()
@@ -36,7 +36,7 @@ namespace tetris
 
         private void CreateNewFigure()
         {
-            _figuresController.CreateNewFigureRandom();
+            _blockController.CreateNewFigureRandom();
         }
 
         public void Pause()
@@ -49,21 +49,21 @@ namespace tetris
             if (!_pressKeyHandler.OperateIfKeyPressed())
                 return;
 
-            var pressedKey = _pressKeyHandler.pressedKey;
+            var pressedKey = _pressKeyHandler.PressedKey;
 
             switch (pressedKey)
             {
                 case ConsoleKey.LeftArrow:
-                    _figuresController.FigureMove(Directions.Left);
+                    _blockController.FigureMove(Directions.Left);
                     break;
                 case ConsoleKey.RightArrow:
-                    _figuresController.FigureMove(Directions.Right);
+                    _blockController.FigureMove(Directions.Right);
                     break;
                 case ConsoleKey.DownArrow:
-                    _figuresController.FigureMove(Directions.Down);
+                    _blockController.FigureMove(Directions.Down);
                     break;
                 case ConsoleKey.Spacebar:
-                    _figuresController.FigureRotate();
+                    _blockController.FigureRotate();
                     break;
             }
         }
@@ -72,7 +72,7 @@ namespace tetris
         {
             KeyPressHandler();
 
-            _figuresController.CreateNewFigureIfNeeded();
+            _blockController.CreateNewFigureIfPossible();
             //_figuresController.MoveFigureDown();
             
             //Thread.Sleep(500);
@@ -80,12 +80,8 @@ namespace tetris
 
         private bool GameOver()
         {
-            //TODO:
-
             // if it's impossible to create a new block because of collision
-
-
-            return false;
+            return _blockController.IsGameOver();
         }
     }
 }

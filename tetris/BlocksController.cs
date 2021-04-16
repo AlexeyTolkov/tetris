@@ -9,7 +9,7 @@ namespace tetris
         {
             // initial position
             private const int _figureInitPositionX = 20;
-            private const int _figureInitPositionY = 10;
+            private const int _figureInitPositionY = 0;
 
             // list of figures
             private List<Block> _figures = new List<Block>();
@@ -29,12 +29,15 @@ namespace tetris
             {
                 _figureInFocus = Block.Create(blockType, _figureInitPositionX, _figureInitPositionY);
                 _figures.Add(_figureInFocus);
+
+                OperatePositionResult(
+                    _figureInFocus.VerifyPosition());
             }
 
-            internal void CreateNewFigureIfNeeded()
+            internal void CreateNewFigureIfPossible()
             {
                 if (_figureInFocus == null
-                    || _figureInFocus.getState() == BlockState.Freezed)
+                    || _figureInFocus.State == BlockState.Freezed)
                 {
                     CreateNewFigureRandom();
                 }
@@ -44,22 +47,61 @@ namespace tetris
             {
                 if (_figureInFocus != null)
                 {
-                    _figureInFocus.TryRotate();
-                }
-            }
+                    OperatePositionResult(
+                        _figureInFocus.TryRotate());
 
-            protected void Reset()
-            {
-                _figures = new List<Block>();
-                _figureInFocus = null;
+                }
             }
 
             internal void FigureMove(Directions direction)
             { 
                 if (_figureInFocus != null)
                 {
-                    _figureInFocus.TryMove(direction);
+                    OperatePositionResult( 
+                        _figureInFocus.TryMove(direction), direction);
                 }
+            }
+
+            internal void OperatePositionResult(PositionResult posResult, Directions direction = Directions.None)
+            {
+                switch (posResult)  
+                {
+                    case PositionResult.BORDER_STRIKE:
+                        break;
+                    case PositionResult.DOWN_BORDER_STRIKE:
+                        FreezeTheBlock();
+                        CreateNewFigureRandom();
+                        break;
+                    case PositionResult.HEAP_STRIKE:
+                        if (direction == Directions.Down)
+                        {
+                            FreezeTheBlock();
+                            CreateNewFigureRandom();
+                        }
+                        break;
+                    case PositionResult.NEW_BLOCK_IS_STUCKED:
+                        _figureInFocus.State = BlockState.Stucked;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            internal bool IsGameOver()
+            {
+                return _figureInFocus.State == BlockState.Stucked;
+            }
+
+            private void FreezeTheBlock()
+            {
+                _figureInFocus.State = BlockState.Freezed;
+                Field.AddFigure(_figureInFocus);
+            }
+
+            protected void Reset()
+            {
+                _figures = new List<Block>();
+                _figureInFocus = null;
             }
         }
     }

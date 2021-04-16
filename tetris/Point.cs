@@ -53,10 +53,5 @@ namespace tetris
         {
             return new Point(X, Y, Sym);
         }
-
-        public bool IsWindowBoundsCollision()
-        {
-            return X >= Field.Width || X < 0 || Y >= Field.Height || Y < 0;
-        }
     }
 }
