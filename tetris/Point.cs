@@ -6,24 +6,52 @@ using System.Threading.Tasks;
 
 namespace tetris
 {
-
-    class Point
+    public class Point
     {
-        readonly int _x;
-        readonly int _y;
-        readonly string _sym;
+        public int X { get; set; }
+        public int Y { get; set; }
+        public string Sym { get; set; }
 
         public Point(int x, int y, string sym)
         {
-            _x = x;
-            _y = y;
-            _sym = sym;
+            X = x;
+            Y = y;
+            Sym = sym;
         }
 
         public void Draw()
         {
-            Console.SetCursorPosition(_x, _y);
-            Console.Write(_sym);
+            Console.SetCursorPosition(X, Y);
+            Console.Write(Sym);
+        }
+
+        internal void Hide()
+        {
+            Console.SetCursorPosition(X, Y);
+            Console.Write(" ");
+        }
+
+        internal void Move(Directions dir)
+        {
+            switch (dir)
+            {
+                case Directions.Left:
+                    X--;
+                    break;
+
+                case Directions.Right:
+                    X++;
+                    break;
+
+                case Directions.Down:
+                    Y++;
+                    break;
+            }
+        }
+
+        internal Point Clone()
+        {
+            return new Point(X, Y, Sym);
         }
     }
 }
